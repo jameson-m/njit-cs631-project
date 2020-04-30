@@ -3,10 +3,12 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { Container, Image } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
+import logo from './images/logo-njit.png';
 import Main from './components/Main';
 import Students from './components/Students';
 import Register from './components/Register';
-import logo from './images/logo-njit.png';
+import Faculty from './components/Faculty';
+import ClassList from './components/ClassList';
 
 function App() {
   return (
@@ -21,7 +23,9 @@ function App() {
               padding: '10px',
             }}
           >
-            <Image style={{ height: '5rem' }} src={logo} />
+            <Link to="/">
+              <Image style={{ height: '5rem' }} src={logo} />
+            </Link>
           </div>
           <Switch>
             <Route exact path="/">
@@ -34,6 +38,12 @@ function App() {
             </Route>
             <Route exact path="/students/register">
               <Register />
+            </Route>
+            <Route exact path="/faculty">
+              <Faculty />
+            </Route>
+            <Route exact path="/faculty/class-list">
+              <ClassList />
             </Route>
           </Switch>
         </div>

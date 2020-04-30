@@ -1,26 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { Container, Form, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { loginStudent } from '../store/actions';
 
-const Students = ({}) => {
+const Students = ({ loginStudent, history }) => {
+  const [ studentId, setStudentId ] = useState('');
+
+  const login = studentId => {
+    loginStudent(studentId);
+    history.push('/students/register');
+  };
+
   return (
     <Container>
       <h2>Students Log In</h2>
       <br />
       <Form>
-        <Form.Group controlId="formBasicEmail">
+        <Form.Group controlId="formStudentId">
           <Form.Label>Student ID</Form.Label>
-          <Form.Control type="text" autoComplete="false" />
+          <Form.Control
+            type="text"
+            autoComplete="false"
+            onChange={e => setStudentId(e.target.value)}
+          />
         </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
+        <Form.Group controlId="formPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control type="password" disabled />
         </Form.Group>
-        <Form.Group controlId="formBasicCheckbox">
+        <Form.Group controlId="formRememberCheckbox">
           <Form.Check type="checkbox" label="Remember me" disabled />
         </Form.Group>
-        <Button variant="primary" as={Link} to="/students/register">
+
+        <Button variant="primary" onClick={() => login(studentId)}>
           Submit
         </Button>
       </Form>
@@ -28,4 +42,6 @@ const Students = ({}) => {
   );
 };
 
-export default Students;
+const mapStateToProps = state => ({});
+
+export default connect(mapStateToProps, { loginStudent })(withRouter(Students));

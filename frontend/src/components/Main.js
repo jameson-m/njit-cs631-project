@@ -1,10 +1,10 @@
 import React from 'react';
-import { Container, Card, Button } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import students from '../images/students.jpg';
 import faculty from '../images/faculty.jpg';
 
-const Main = ({}) => {
+const Main = () => {
   return (
     <div id="login-options">
       <Card style={{ width: '20rem', margin: 'auto' }}>
