@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Container, Table, Card, Form } from 'react-bootstrap';
-import { fetchDepartments, fetchCourses } from '../utils/api';
+import { fetchDepartments, fetchCourses, fetchSections } from '../utils/api';
 
 const ClassList = () => {
   const [ departments, setDepartments ] = useState([]);
@@ -12,7 +12,7 @@ const ClassList = () => {
   const [ selectedSection, setSelectedSection ] = useState(null);
 
   useEffect(() => {
-    fetchDepartments()
+    fetchDepartments('/faculty')
       .then(departments => setDepartments(departments))
       .catch(err => alert(err.message));
   }, []);
@@ -43,7 +43,7 @@ const ClassList = () => {
                 onChange={e => {
                   let departmentCode = e.target.value;
                   setSelectedDepartment(departmentCode);
-                  fetchCourses(departmentCode)
+                  fetchCourses('/faculty', departmentCode)
                     .then(courses => setCourses(courses))
                     .catch(err => alert(err.message));
                 }}
@@ -62,7 +62,13 @@ const ClassList = () => {
               <Form.Label>Courses</Form.Label>
               <Form.Control
                 as="select"
-                onChange={e => setSelectedCourse(e.target.value)}
+                onChange={e => {
+                  let courseNumber = e.target.value;
+                  setSelectedCourse(courseNumber);
+                  fetchSections('/faculty', courseNumber)
+                    .then(sections => setSections(sections))
+                    .catch(err => alert(err.message));
+                }}
                 defaultValue=""
                 disabled={!selectedDepartment}
               >

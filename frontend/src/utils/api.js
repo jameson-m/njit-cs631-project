@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-export const fetchDepartments = async () => {
+export const fetchDepartments = async url => {
   const result = await axios({
     method: 'POST',
     baseUrl: 'localhost:4444',
-    url: '/student',
+    url,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -15,11 +15,11 @@ export const fetchDepartments = async () => {
   return result.data.department;
 };
 
-export const fetchCourses = async departmentCode => {
+export const fetchCourses = async (url, departmentCode) => {
   const result = await axios({
     method: 'POST',
     baseUrl: 'localhost:4444',
-    url: '/student',
+    url,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -30,4 +30,21 @@ export const fetchCourses = async departmentCode => {
   });
 
   return result.data.course;
+};
+
+export const fetchSections = async (url, courseNumber) => {
+  const result = await axios({
+    method: 'POST',
+    baseUrl: 'localhost:4444',
+    url,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    data: {
+      courseNumber,
+    },
+  });
+
+  return result.data.section;
 };

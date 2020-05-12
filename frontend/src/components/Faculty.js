@@ -43,6 +43,7 @@ const Faculty = ({ login, history }) => {
           <Form.Label>Faculty SSN</Form.Label>
           <Form.Control type="text" autoComplete="false" onChange={e => setSSN(e.target.value)} />
         </Form.Group>
+        <p className="text-muted">Test Faculty: 92749998</p>
 
         <Form.Group controlId="formPassword">
           <Form.Label>Password</Form.Label>

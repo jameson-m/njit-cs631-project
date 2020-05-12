@@ -10,7 +10,7 @@ const Register = () => {
   const [ selectedCourse, setSelectedCourse ] = useState(null);
 
   useEffect(() => {
-    fetchDepartments()
+    fetchDepartments('/student')
       .then(departments => setDepartments(departments))
       .catch(err => alert(err.message));
   }, []);
@@ -36,7 +36,7 @@ const Register = () => {
                 onChange={e => {
                   let departmentCode = e.target.value;
                   setSelectedDepartment(departmentCode);
-                  fetchCourses(departmentCode)
+                  fetchCourses('/student', departmentCode)
                     .then(courses => setCourses(courses))
                     .catch(err => alert(err.message));
                 }}
