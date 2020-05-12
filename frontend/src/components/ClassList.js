@@ -1,43 +1,22 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Container, Table, Card, Form } from 'react-bootstrap';
+import axios from 'axios';
+import { fetchDepartments, fetchCourses } from '../utils/api';
 
 const ClassList = () => {
-  const [ departments, setDepartments ] = useState([
-    { code: 'cs', name: 'Computer Science' },
-    { code: 'ls', name: 'Life Sciences' },
-    { code: 'h', name: 'History' },
-  ]);
-  const [ courses, setCourses ] = useState([
-    { number: 'CS631', name: 'Database Systems Design' },
-    { number: 'CS506', name: 'Foundations of Computer Science' },
-  ]);
-  const [ sections, setSections ] = useState([
-    {
-      sectionNumber: '235978',
-      courseNumber: 'CS631',
-      instructor: 'Oria',
-      enrolled: 22,
-      maxEnroll: 30,
-    },
-    {
-      sectionNumber: '235979',
-      courseNumber: 'CS631',
-      instructor: 'Oria',
-      enrolled: 2,
-      maxEnroll: 30,
-    },
-    {
-      sectionNumber: '235980',
-      courseNumber: 'CS631',
-      instructor: 'Oria',
-      enrolled: 0,
-      maxEnroll: 30,
-    },
-  ]);
+  const [ departments, setDepartments ] = useState([]);
+  const [ courses, setCourses ] = useState([]);
+  const [ sections, setSections ] = useState([]);
   const [ students, setStudents ] = useState([]);
   const [ selectedDepartment, setSelectedDepartment ] = useState(null);
   const [ selectedCourse, setSelectedCourse ] = useState(null);
   const [ selectedSection, setSelectedSection ] = useState(null);
+
+  useEffect(() => {
+    fetchDepartments()
+      .then(departments => setDepartments(departments))
+      .catch(err => alert(err.message));
+  }, []);
 
   useEffect(
     () => {
@@ -62,13 +41,17 @@ const ClassList = () => {
               <Form.Label>Department</Form.Label>
               <Form.Control
                 as="select"
-                onChange={e => setSelectedDepartment(e.target.value)}
+                onChange={e => {
+                  let departmentCode = e.target.value;
+                  setSelectedDepartment(departmentCode);
+                  fetchCourses(departmentCode).then(courses => setCourses(courses));
+                }}
                 defaultValue=""
               >
                 <option value="" disabled />
-                {departments.map(department => (
-                  <option key={department.code} value={department.code}>
-                    {department.name}
+                {departments.map(({ departmentCode, departmentName }) => (
+                  <option key={departmentCode} value={departmentCode}>
+                    {departmentName}
                   </option>
                 ))}
               </Form.Control>
@@ -83,9 +66,9 @@ const ClassList = () => {
                 disabled={!selectedDepartment}
               >
                 <option value="" disabled />
-                {courses.map(course => (
-                  <option key={course.number} value={course.number}>
-                    {course.number}&nbsp;{course.name}
+                {courses.map(({ courseNumber, courseName }) => (
+                  <option key={courseNumber} value={courseNumber}>
+                    {courseName}&nbsp;({courseNumber})
                   </option>
                 ))}
               </Form.Control>
