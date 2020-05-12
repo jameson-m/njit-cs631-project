@@ -1,41 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Table, Card, Form } from 'react-bootstrap';
+import axios from 'axios';
 
 const Register = () => {
-  const [ departments, setDepartments ] = useState([
-    { code: 'cs', name: 'Computer Science' },
-    { code: 'ls', name: 'Life Sciences' },
-    { code: 'h', name: 'History' },
-  ]);
-  const [ courses, setCourses ] = useState([
-    { number: 'CS631', name: 'Database Systems Design' },
-    { number: 'CS506', name: 'Foundations of Computer Science' },
-  ]);
-  const [ sections, setSections ] = useState([
-    {
-      sectionNumber: '235978',
-      courseNumber: 'CS631',
-      instructor: 'Oria',
-      enrolled: 22,
-      maxEnroll: 30,
-    },
-    {
-      sectionNumber: '235979',
-      courseNumber: 'CS631',
-      instructor: 'Oria',
-      enrolled: 2,
-      maxEnroll: 30,
-    },
-    {
-      sectionNumber: '235980',
-      courseNumber: 'CS631',
-      instructor: 'Oria',
-      enrolled: 0,
-      maxEnroll: 30,
-    },
-  ]);
+  const [ departments, setDepartments ] = useState([]);
+  const [ courses, setCourses ] = useState([]);
+  const [ sections, setSections ] = useState([]);
   const [ selectedDepartment, setSelectedDepartment ] = useState(null);
   const [ selectedCourse, setSelectedCourse ] = useState(null);
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      const result = await axios({
+        method: 'POST',
+        baseUrl: 'localhost:4444',
+        url: '/student',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        data: null,
+      });
+
+      setDepartments(result.data.department);
+    };
+
+    fetchDepartments();
+  }, []);
+
+  const fetchCourses = async departmentCode => {
+    const result = await axios({
+      method: 'POST',
+      baseUrl: 'localhost:4444',
+      url: '/student',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      data: {
+        departmentCode,
+      },
+    });
+
+    setCourses(result.data.course);
+  };
 
   // Functions
   const register = sectionNumber => {
@@ -53,11 +61,18 @@ const Register = () => {
           <Form>
             <Form.Group controlId="form.DepartmentSelect">
               <Form.Label>Department</Form.Label>
-              <Form.Control as="select" onChange={e => setSelectedDepartment(e.target.value)}>
+              <Form.Control
+                as="select"
+                onChange={e => {
+                  let departmentCode = e.target.value;
+                  setSelectedDepartment(departmentCode);
+                  fetchCourses(departmentCode);
+                }}
+              >
                 <option />
-                {departments.map(department => (
-                  <option key={department.code} value={department.code}>
-                    {department.name}
+                {departments.map(({ departmentCode, departmentName }) => (
+                  <option key={departmentCode} value={departmentCode}>
+                    {departmentName}
                   </option>
                 ))}
               </Form.Control>
@@ -71,9 +86,9 @@ const Register = () => {
                 disabled={!selectedDepartment}
               >
                 <option />
-                {courses.map(course => (
-                  <option key={course.number} value={course.number}>
-                    {course.number}&nbsp;{course.name}
+                {courses.map(({ courseName, courseNumber }) => (
+                  <option key={courseNumber} value={courseNumber}>
+                    {courseName}&nbsp;({courseNumber})
                   </option>
                 ))}
               </Form.Control>
