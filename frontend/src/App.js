@@ -9,6 +9,7 @@ import Students from './components/Students';
 import Register from './components/Register';
 import Faculty from './components/Faculty';
 import ClassList from './components/ClassList';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   return (
@@ -36,12 +37,12 @@ function App() {
             <Route exact path="/students">
               <Students />
             </Route>
-            <Route exact path="/students/register">
+            <PrivateRoute exact path="/students/register" userType="student">
               <Register />
-            </Route>
-            <Route exact path="/faculty">
+            </PrivateRoute>
+            <PrivateRoute exact path="/faculty" userType="faculty">
               <Faculty />
-            </Route>
+            </PrivateRoute>
             <Route exact path="/faculty/class-list">
               <ClassList />
             </Route>
