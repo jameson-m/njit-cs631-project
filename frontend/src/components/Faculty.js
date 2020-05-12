@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Container, Form, Button } from 'react-bootstrap';
-import { loginFaculty } from '../store/actions';
+import { login } from '../store/actions';
 
-const Faculty = ({ loginFaculty, history }) => {
+const Faculty = ({ login, history }) => {
   const [ ssn, setSSN ] = useState('');
 
-  const login = ssn => {
-    loginFaculty(ssn);
+  const handleLogin = ssn => {
+    login({ userType: 'faculty', id: ssn });
     history.push('/faculty/class-list');
   };
 
@@ -30,7 +30,7 @@ const Faculty = ({ loginFaculty, history }) => {
           <Form.Check type="checkbox" label="Remember me" disabled />
         </Form.Group>
 
-        <Button variant="primary" onClick={() => login(ssn)}>
+        <Button variant="primary" onClick={() => handleLogin(ssn)}>
           Submit
         </Button>
       </Form>
@@ -40,4 +40,4 @@ const Faculty = ({ loginFaculty, history }) => {
 
 const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, { loginFaculty })(withRouter(Faculty));
+export default connect(mapStateToProps, { login })(withRouter(Faculty));

@@ -1,21 +1,21 @@
-import { LOGIN_STUDENT, LOGIN_FACULTY } from '../actionTypes';
+import { LOGIN_STUDENT, LOGIN_FACULTY, LOGIN } from '../actionTypes';
 
 const DEFAULT_STATE = {
-  student: null,
-  faculty: null,
+  user: {
+    type: '', // student or faculty
+    id: '', // studentId or ssn (faculty)
+  },
 };
 
 export default (state = DEFAULT_STATE, action) => {
   switch (action.type) {
-    case LOGIN_STUDENT:
+    case LOGIN:
       return {
         ...state,
-        student: action.studentId,
-      };
-    case LOGIN_FACULTY:
-      return {
-        ...state,
-        faculty: action.ssn,
+        user: {
+          type: action.userType,
+          id: action.id,
+        },
       };
     default:
       return state;

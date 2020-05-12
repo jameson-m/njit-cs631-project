@@ -2,14 +2,36 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Container, Form, Button } from 'react-bootstrap';
-import { loginStudent } from '../store/actions';
+import axios from 'axios';
+import { login } from '../store/actions';
 
-const Students = ({ loginStudent, history }) => {
+const Students = ({ login, history }) => {
   const [ studentId, setStudentId ] = useState('');
 
-  const login = studentId => {
-    loginStudent(studentId);
-    history.push('/students/register');
+  const handleLogin = studentId => {
+    let studentIdInt = parseInt(studentId);
+    axios({
+      method: 'POST',
+      baseUrl: 'localhost:4444',
+      url: '/login',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        studentId: studentIdInt,
+      },
+    })
+      .then(res => {
+        if (res.status === 200) {
+          login({ userType: 'student', id: studentIdInt });
+          history.push('/students/register');
+        } else {
+          throw new Error('Error received while logging in. Please try again.');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
@@ -34,7 +56,7 @@ const Students = ({ loginStudent, history }) => {
           <Form.Check type="checkbox" label="Remember me" disabled />
         </Form.Group>
 
-        <Button variant="primary" onClick={() => login(studentId)}>
+        <Button variant="primary" onClick={() => handleLogin(studentId)}>
           Submit
         </Button>
       </Form>
@@ -44,4 +66,4 @@ const Students = ({ loginStudent, history }) => {
 
 const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, { loginStudent })(withRouter(Students));
+export default connect(mapStateToProps, { login })(withRouter(Students));
