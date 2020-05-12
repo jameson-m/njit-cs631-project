@@ -40,12 +40,12 @@ function App() {
             <PrivateRoute exact path="/students/register" userType="student">
               <Register />
             </PrivateRoute>
-            <PrivateRoute exact path="/faculty" userType="faculty">
+            <Route exact path="/faculty">
               <Faculty />
-            </PrivateRoute>
-            <Route exact path="/faculty/class-list">
-              <ClassList />
             </Route>
+            <PrivateRoute exact path="/faculty/class-list" userType="faculty">
+              <ClassList />
+            </PrivateRoute>
           </Switch>
         </div>
       </Router>

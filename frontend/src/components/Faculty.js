@@ -3,13 +3,35 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Container, Form, Button } from 'react-bootstrap';
 import { login } from '../store/actions';
+import axios from 'axios';
 
 const Faculty = ({ login, history }) => {
   const [ ssn, setSSN ] = useState('');
 
   const handleLogin = ssn => {
-    login({ userType: 'faculty', id: ssn });
-    history.push('/faculty/class-list');
+    let ssnInt = parseInt(ssn);
+    axios({
+      method: 'POST',
+      baseUrl: 'localhost:4444',
+      url: '/login',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        ssn: ssnInt,
+      },
+    })
+      .then(res => {
+        if (res.status === 200) {
+          login({ userType: 'faculty', id: ssn });
+          history.push('/faculty/class-list');
+        } else {
+          throw new Error('Error received while logging in. Please try again.');
+        }
+      })
+      .catch(err => {
+        alert(err.message);
+      });
   };
 
   return (
