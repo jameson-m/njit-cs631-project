@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Card, Form } from 'react-bootstrap';
-import axios from 'axios';
+import { fetchDepartments, fetchCourses } from '../utils/api';
 
 const Register = () => {
   const [ departments, setDepartments ] = useState([]);
@@ -10,40 +10,10 @@ const Register = () => {
   const [ selectedCourse, setSelectedCourse ] = useState(null);
 
   useEffect(() => {
-    const fetchDepartments = async () => {
-      const result = await axios({
-        method: 'POST',
-        baseUrl: 'localhost:4444',
-        url: '/student',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        data: null,
-      });
-
-      setDepartments(result.data.department);
-    };
-
-    fetchDepartments();
+    fetchDepartments()
+      .then(departments => setDepartments(departments))
+      .catch(err => alert(err.message));
   }, []);
-
-  const fetchCourses = async departmentCode => {
-    const result = await axios({
-      method: 'POST',
-      baseUrl: 'localhost:4444',
-      url: '/student',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      data: {
-        departmentCode,
-      },
-    });
-
-    setCourses(result.data.course);
-  };
 
   // Functions
   const register = sectionNumber => {
@@ -66,7 +36,9 @@ const Register = () => {
                 onChange={e => {
                   let departmentCode = e.target.value;
                   setSelectedDepartment(departmentCode);
-                  fetchCourses(departmentCode);
+                  fetchCourses(departmentCode)
+                    .then(courses => setCourses(courses))
+                    .catch(err => alert(err.message));
                 }}
               >
                 <option />
@@ -98,7 +70,7 @@ const Register = () => {
           <br />
 
           {/* COURSE SECTIONS */}
-          <h3>Sections for {selectedCourse}</h3>
+          <h3>Sections for Course</h3>
           <p>Click on a section's row to register for the course.</p>
           <Table hover size="sm" responsive="md">
             <thead className="thead-light">

@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Container, Table, Card, Form } from 'react-bootstrap';
-import axios from 'axios';
 import { fetchDepartments, fetchCourses } from '../utils/api';
 
 const ClassList = () => {
@@ -44,7 +43,9 @@ const ClassList = () => {
                 onChange={e => {
                   let departmentCode = e.target.value;
                   setSelectedDepartment(departmentCode);
-                  fetchCourses(departmentCode).then(courses => setCourses(courses));
+                  fetchCourses(departmentCode)
+                    .then(courses => setCourses(courses))
+                    .catch(err => alert(err.message));
                 }}
                 defaultValue=""
               >
