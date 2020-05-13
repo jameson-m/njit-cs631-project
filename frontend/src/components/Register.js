@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Container, Row, Col, Table, Card, Form, Button } from 'react-bootstrap';
-import { fetchDepartments, fetchCourses, fetchSectionsStudent } from '../utils/api';
+import { fetchDepartments, fetchCourses, fetchSectionsStudent, register } from '../utils/api';
 
 const Register = ({ studentId }) => {
   const [ departments, setDepartments ] = useState([]);
@@ -9,6 +9,7 @@ const Register = ({ studentId }) => {
   const [ sections, setSections ] = useState([]);
   const [ selectedDepartment, setSelectedDepartment ] = useState(null);
   const [ selectedCourse, setSelectedCourse ] = useState(null);
+  const [ isRegistered, setIsRegistered ] = useState(false);
 
   useEffect(() => {
     fetchDepartments('/student')
@@ -16,10 +17,13 @@ const Register = ({ studentId }) => {
       .catch(err => alert(err.message));
   }, []);
 
-  // Functions
-  const register = sectionNumber => {
-    console.log('registered for section', sectionNumber);
-  };
+  useEffect(
+    () => {
+      let s = sections.filter(s => s.isRegistered === 'true');
+      setIsRegistered(s.length > 0);
+    },
+    [ sections ]
+  );
 
   return (
     <Container>
@@ -110,6 +114,11 @@ const Register = ({ studentId }) => {
           {/* COURSE SECTIONS */}
           <h3>Sections for Course</h3>
           <p>Click on a section's row to register for the course.</p>
+          {isRegistered && (
+            <p>
+              <strong>You are already registered for a section (highlighted green).</strong>
+            </p>
+          )}
           <Table hover size="md" responsive="md">
             <thead className="thead-light">
               <tr>
@@ -121,23 +130,40 @@ const Register = ({ studentId }) => {
               </tr>
             </thead>
             <tbody>
-              {sections.map(section => (
-                <tr key={section.sectionNumber}>
-                  <td>{selectedCourse.courseName}</td>
-                  <td>{section.sectionNumber}</td>
-                  <td>{`${section.firstName} ${section.lastName}`}</td>
-                  <td>{section.capacity - section.count}</td>
-                  <td>{section.capacity}</td>
-                  <td>
-                    <Button
-                      onClick={() => register(section.sectionNumber)}
-                      disabled={section.capacity - section.count === 0}
-                    >
-                      Register
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+              {sections.map(section => {
+                return (
+                  <tr
+                    key={section.sectionNumber}
+                    className={section.isRegistered === 'true' ? 'alert-success' : ''}
+                  >
+                    <td>{selectedCourse.courseName}</td>
+                    <td>
+                      {section.sectionNumber}&nbsp;{section.isRegistered}
+                    </td>
+                    <td>{`${section.firstName} ${section.lastName}`}</td>
+                    <td>{section.capacity - section.count}</td>
+                    <td>{section.capacity}</td>
+                    <td>
+                      <Button
+                        onClick={async () => {
+                          const res = await register(
+                            studentId,
+                            selectedCourse.courseNumber,
+                            section.sectionNumber
+                          );
+                          if (res === 200)
+                            alert(
+                              `Successfully registered for section ${section.sectionNumber} of course ${selectedCourse.courseName}`
+                            );
+                        }}
+                        disabled={isRegistered || section.capacity - section.count === 0}
+                      >
+                        Register
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
         </Card.Body>

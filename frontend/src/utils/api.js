@@ -66,3 +66,45 @@ export const fetchSectionsStudent = async (studentId, courseNumber) => {
 
   return result.data.section;
 };
+
+export const register = async (studentId, courseNumber, sectionNumber) => {
+  try {
+    const result = await axios({
+      method: 'POST',
+      baseUrl: 'localhost:4444',
+      url: '/student',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      data: {
+        studentId,
+        courseNumber,
+        sectionNumber,
+      },
+    });
+
+    return result.status;
+  } catch (err) {
+    console.log(err);
+    throw new Error(err);
+  }
+};
+
+export const getClassList = async (courseNumber, sectionNumber) => {
+  const result = await axios({
+    method: 'POST',
+    baseUrl: 'localhost:4444',
+    url: '/faculty',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    data: {
+      courseNumber,
+      sectionNumber,
+    },
+  });
+
+  return result.data;
+};

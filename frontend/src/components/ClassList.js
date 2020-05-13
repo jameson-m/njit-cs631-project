@@ -1,12 +1,13 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Container, Table, Card, Form } from 'react-bootstrap';
-import { fetchDepartments, fetchCourses, fetchSections } from '../utils/api';
+import { fetchDepartments, fetchCourses, fetchSections, getClassList } from '../utils/api';
 
 const ClassList = () => {
   const [ departments, setDepartments ] = useState([]);
   const [ courses, setCourses ] = useState([]);
   const [ sections, setSections ] = useState([]);
   const [ students, setStudents ] = useState([]);
+  const [ classInfo, setClassInfo ] = useState({});
   const [ selectedDepartment, setSelectedDepartment ] = useState(null);
   const [ selectedCourse, setSelectedCourse ] = useState(null);
   const [ selectedSection, setSelectedSection ] = useState(null);
@@ -64,9 +65,12 @@ const ClassList = () => {
                 as="select"
                 onChange={e => {
                   let courseNumber = e.target.value;
-                  setSelectedCourse(courseNumber);
+                  let selected = courses.find(c => c.courseNumber === parseInt(courseNumber));
+                  setSelectedCourse(selected);
                   fetchSections('/faculty', courseNumber)
-                    .then(sections => setSections(sections))
+                    .then(sections => {
+                      setSections(sections);
+                    })
                     .catch(err => alert(err.message));
                 }}
                 defaultValue=""
@@ -85,7 +89,16 @@ const ClassList = () => {
               <Form.Label>Sections</Form.Label>
               <Form.Control
                 as="select"
-                onChange={e => setSelectedSection(e.target.value)}
+                onChange={e => {
+                  let sectionNumber = e.target.value;
+                  setSelectedSection(sectionNumber);
+                  getClassList(selectedCourse.courseNumber, sectionNumber)
+                    .then(classList => {
+                      setClassInfo(classList.classInfo);
+                      setStudents(classList.students);
+                    })
+                    .catch(err => alert(err.message));
+                }}
                 disabled={!selectedDepartment || !selectedCourse}
                 defaultValue=""
               >
@@ -119,26 +132,32 @@ const ClassList = () => {
                 <div style={{ flexGrow: '1' }}>
                   <p>
                     <strong>Course Code:&nbsp;</strong>
+                    {selectedCourse.courseNumber}
                   </p>
                   <p>
                     <strong>Course Name:&nbsp;</strong>
+                    {selectedCourse.courseName}
                   </p>
                   <p>
                     <strong>Section Number:&nbsp;</strong>
+                    {selectedSection}
                   </p>
                   <p>
                     <strong>Instructor:&nbsp;</strong>
+                    {`${classInfo.firstName} ${classInfo.lastName}`}
                   </p>
                 </div>
                 <div style={{ flexGrow: '1' }}>
                   <p>
                     <strong>Time:&nbsp;</strong>
+                    {classInfo.time}
                   </p>
                   <p>
-                    <strong>Location:&nbsp;</strong>
+                    <strong>Location:&nbsp;</strong>Building&nbsp;{classInfo.buildingId}
                   </p>
                   <p>
-                    <strong>Weekday(s):&nbsp;</strong>
+                    <strong>Weekday:&nbsp;</strong>
+                    {classInfo.weekday}
                   </p>
                 </div>
               </div>
@@ -152,13 +171,12 @@ const ClassList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* TODO: Change this to students.map() */}
-                  {sections.map(section => (
-                    <tr key={section.sectionNumber} style={{ cursor: 'pointer' }}>
-                      <td>{section.courseNumber}</td>
-                      <td>{section.sectionNumber}</td>
-                      <td>{section.instructor}</td>
-                      <td>{section.maxEnroll - section.enrolled}</td>
+                  {students.map(student => (
+                    <tr key={student.studentId} style={{ cursor: 'pointer' }}>
+                      <td>{student.name}</td>
+                      <td>{student.studentId}</td>
+                      <td>{student.major}</td>
+                      <td>{student.year}</td>
                     </tr>
                   ))}
                 </tbody>
