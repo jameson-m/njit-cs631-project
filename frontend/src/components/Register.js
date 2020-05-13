@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Table, Card, Form } from 'react-bootstrap';
-import { fetchDepartments, fetchCourses } from '../utils/api';
+import { connect } from 'react-redux';
+import { Container, Row, Col, Table, Card, Form, Button } from 'react-bootstrap';
+import { fetchDepartments, fetchCourses, fetchSectionsStudent } from '../utils/api';
 
-const Register = () => {
+const Register = ({ studentId }) => {
   const [ departments, setDepartments ] = useState([]);
   const [ courses, setCourses ] = useState([]);
   const [ sections, setSections ] = useState([]);
@@ -84,7 +85,14 @@ const Register = () => {
               <Form.Label>Courses</Form.Label>
               <Form.Control
                 as="select"
-                onChange={e => setSelectedCourse(e.target.value)}
+                onChange={e => {
+                  let courseNumber = e.target.value;
+                  let selected = courses.find(c => c.courseNumber === parseInt(courseNumber));
+                  setSelectedCourse(selected);
+                  fetchSectionsStudent(studentId, courseNumber)
+                    .then(sections => setSections(sections))
+                    .catch(err => alert(err.message));
+                }}
                 disabled={!selectedDepartment}
               >
                 <option />
@@ -102,27 +110,32 @@ const Register = () => {
           {/* COURSE SECTIONS */}
           <h3>Sections for Course</h3>
           <p>Click on a section's row to register for the course.</p>
-          <Table hover size="sm" responsive="md">
+          <Table hover size="md" responsive="md">
             <thead className="thead-light">
               <tr>
                 <th>Course</th>
                 <th>Section</th>
                 <th>Instructor</th>
                 <th colSpan={2}>Availability</th>
+                <th />
               </tr>
             </thead>
             <tbody>
               {sections.map(section => (
-                <tr
-                  key={section.sectionNumber}
-                  onClick={() => register(section.sectionNumber)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <td>{section.courseNumber}</td>
+                <tr key={section.sectionNumber}>
+                  <td>{selectedCourse.courseName}</td>
                   <td>{section.sectionNumber}</td>
-                  <td>{section.instructor}</td>
-                  <td>{section.maxEnroll - section.enrolled}</td>
-                  <td>{section.maxEnroll}</td>
+                  <td>{`${section.firstName} ${section.lastName}`}</td>
+                  <td>{section.capacity - section.count}</td>
+                  <td>{section.capacity}</td>
+                  <td>
+                    <Button
+                      onClick={() => register(section.sectionNumber)}
+                      disabled={section.capacity - section.count === 0}
+                    >
+                      Register
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -133,4 +146,8 @@ const Register = () => {
   );
 };
 
-export default Register;
+const mapStateToProps = state => ({
+  studentId: state.auth.user.id,
+});
+
+export default connect(mapStateToProps)(Register);

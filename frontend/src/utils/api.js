@@ -48,3 +48,21 @@ export const fetchSections = async (url, courseNumber) => {
 
   return result.data.section;
 };
+
+export const fetchSectionsStudent = async (studentId, courseNumber) => {
+  const result = await axios({
+    method: 'POST',
+    baseUrl: 'localhost:4444',
+    url: '/student',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    data: {
+      courseNumber,
+      studentId,
+    },
+  });
+
+  return result.data.section;
+};
