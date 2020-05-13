@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Card, Form } from 'react-bootstrap';
+import { Container, Row, Col, Table, Card, Form } from 'react-bootstrap';
 import { fetchDepartments, fetchCourses } from '../utils/api';
 
 const Register = () => {
@@ -29,6 +29,36 @@ const Register = () => {
         <Card.Body>
           <p>Select the department and course to view all sections for the current semester.</p>
           <Form>
+            <Row>
+              <Col>
+                <Form.Group controlId="form.semesterSelect">
+                  <Form.Label>Semester</Form.Label>
+                  <Form.Control as="select" onChange={e => console.log(e.target.value)}>
+                    <option />
+                    <option value="fall">Fall</option>
+                    <option value="spring" disabled>
+                      Spring
+                    </option>
+                    <option value="summer" disabled>
+                      Summer
+                    </option>
+                  </Form.Control>
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="form.yearSelect">
+                  <Form.Label>Year</Form.Label>
+                  <Form.Control as="select" onChange={e => console.log(e.target.value)}>
+                    <option />
+                    <option value="2020">2020</option>
+                    <option value="2021" disabled>
+                      2021
+                    </option>
+                  </Form.Control>
+                </Form.Group>
+              </Col>
+            </Row>
+
             <Form.Group controlId="form.DepartmentSelect">
               <Form.Label>Department</Form.Label>
               <Form.Control
