@@ -4,7 +4,7 @@ export const fetchDepartments = async url => {
   const result = await axios({
     method: 'POST',
     // baseUrl: 'localhost:4444',
-    url: `http://localhost:4444${url}`,
+    url: `http://127.0.0.1:4444${url}`,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export const fetchCourses = async (url, departmentCode) => {
   const result = await axios({
     method: 'POST',
     // baseUrl: 'localhost:4444',
-    url: `http://localhost:4444${url}`,
+    url: `http://127.0.0.1:4444${url}`,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export const fetchSections = async (url, courseNumber) => {
   const result = await axios({
     method: 'POST',
     baseUrl: 'localhost:4444',
-    url: `http://localhost:4444${url}`,
+    url: `http://127.0.0.1:4444${url}`,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export const fetchSectionsStudent = async (studentId, courseNumber) => {
   const result = await axios({
     method: 'POST',
     // baseUrl: 'localhost:4444',
-    url: 'http://localhost:4444/student',
+    url: 'http://127.0.0.1:4444/student',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export const register = async (studentId, courseNumber, sectionNumber) => {
     const result = await axios({
       method: 'POST',
       // baseUrl: 'localhost:4444',
-      url: 'http://localhost:4444/student',
+      url: 'http://127.0.0.1:4444/student',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ export const getClassList = async (courseNumber, sectionNumber) => {
   const result = await axios({
     method: 'POST',
     // baseUrl: 'localhost:4444',
-    url: 'http://localhost:4444/faculty',
+    url: 'http://127.0.0.1:4444/faculty',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

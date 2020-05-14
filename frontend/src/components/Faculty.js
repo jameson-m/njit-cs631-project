@@ -13,7 +13,7 @@ const Faculty = ({ login, history }) => {
     axios({
       method: 'POST',
       // baseUrl: 'localhost:4444',
-      url: 'http://localhost:4444/login',
+      url: 'http://127.0.0.1:4444/login',
       headers: {
         'Content-Type': 'application/json',
       },
