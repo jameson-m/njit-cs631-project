@@ -12,8 +12,8 @@ const Faculty = ({ login, history }) => {
     let ssnInt = parseInt(ssn);
     axios({
       method: 'POST',
-      baseUrl: 'localhost:4444',
-      url: '/login',
+      // baseUrl: 'localhost:4444',
+      url: 'http://localhost:4444/login',
       headers: {
         'Content-Type': 'application/json',
       },

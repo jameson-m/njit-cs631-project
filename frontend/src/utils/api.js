@@ -3,8 +3,8 @@ import axios from 'axios';
 export const fetchDepartments = async url => {
   const result = await axios({
     method: 'POST',
-    baseUrl: 'localhost:4444',
-    url,
+    // baseUrl: 'localhost:4444',
+    url: `http://localhost:4444${url}`,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -18,8 +18,8 @@ export const fetchDepartments = async url => {
 export const fetchCourses = async (url, departmentCode) => {
   const result = await axios({
     method: 'POST',
-    baseUrl: 'localhost:4444',
-    url,
+    // baseUrl: 'localhost:4444',
+    url: `http://localhost:4444${url}`,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export const fetchSections = async (url, courseNumber) => {
   const result = await axios({
     method: 'POST',
     baseUrl: 'localhost:4444',
-    url,
+    url: `http://localhost:4444${url}`,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -52,8 +52,8 @@ export const fetchSections = async (url, courseNumber) => {
 export const fetchSectionsStudent = async (studentId, courseNumber) => {
   const result = await axios({
     method: 'POST',
-    baseUrl: 'localhost:4444',
-    url: '/student',
+    // baseUrl: 'localhost:4444',
+    url: 'http://localhost:4444/student',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -71,8 +71,8 @@ export const register = async (studentId, courseNumber, sectionNumber) => {
   try {
     const result = await axios({
       method: 'POST',
-      baseUrl: 'localhost:4444',
-      url: '/student',
+      // baseUrl: 'localhost:4444',
+      url: 'http://localhost:4444/student',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -94,8 +94,8 @@ export const register = async (studentId, courseNumber, sectionNumber) => {
 export const getClassList = async (courseNumber, sectionNumber) => {
   const result = await axios({
     method: 'POST',
-    baseUrl: 'localhost:4444',
-    url: '/faculty',
+    // baseUrl: 'localhost:4444',
+    url: 'http://localhost:4444/faculty',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
